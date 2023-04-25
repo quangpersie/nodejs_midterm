@@ -1,14 +1,16 @@
 const express = require("express");
 const chatControllers = require("../controllers/ChatController");
-const { verifyToken } = require("../middlewares/authMiddleware");
+const { verifyToken } = require("../middlewares/authenticate");
 
 const router = express.Router();
 
-router.route("/").post(verifyToken, chatControllers.accessChat);
-router.route("/").get(verifyToken, chatControllers.getAllChats);
-router.route("/group").post(verifyToken, chatControllers.createGroupChat);
-router.route("/rename").put(verifyToken, chatControllers.renameGroup);
-router.route("/add-group").put(verifyToken, chatControllers.addMemberToGroup);
-router.route("/remove-group").put(verifyToken, chatControllers.removeMemberFromGroup);
+router.post('/' ,verifyToken, chatControllers.accessChat);
+router.get('/', verifyToken, chatControllers.getAllChats);
+
+router.post('/group', verifyToken, chatControllers.createGroupChat);
+router.put('/rename', verifyToken, chatControllers.renameGroup);
+
+router.put('/add-group', verifyToken, chatControllers.addMemberToGroup);
+router.put('/remove-group', verifyToken, chatControllers.removeMemberFromGroup);
 
 module.exports = router;

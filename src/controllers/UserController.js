@@ -100,10 +100,9 @@ const loginUser = async (req, res) => {
     }
 
     const user = await User.findOne({ email }).lean();
-    console.log('user login:', user)
+    // console.log('user login:', user)
 
-    let check = await bcrypt.compare(password, user.password);
-    if (user && check) {
+    if (user && (await bcrypt.compare(password, user.password))) {
         let u = {
             _id: user._id,
             name: user.name,

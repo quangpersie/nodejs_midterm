@@ -4,9 +4,7 @@ const User = require("../models/User");
 const verifyToken = async (req, res, next) => {
   let token;
 
-  if (
-    req.headers.authorization && req.headers.authorization.startsWith("Bearer")
-  ) {
+  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
     try {
       token = req.headers.authorization.split(" ")[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -14,12 +12,20 @@ const verifyToken = async (req, res, next) => {
 
       next();
     } catch (error) {
-      res.status(401).send("Not authorized, token failed");
+      return res.json({
+        success: false,
+        error: 'Not authorized, token failed',
+        result: []
+      })
     }
   }
 
   if (!token) {
-    res.status(401).send("Not authorized, no token")
+    return res.json({
+      success: false,
+      error: 'Not authorized, no token',
+      result: []
+    })
   }
 };
 
