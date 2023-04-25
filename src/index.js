@@ -6,9 +6,11 @@ const chatRoutes = require("./routes/chat");
 const messageRoutes = require("./routes/message");
 const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
 const app = express();
+const cors = require('cors')
 
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({extended: false}));
+app.use(cors())
 
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);

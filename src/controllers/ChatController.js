@@ -46,10 +46,9 @@ const accessChat = async (req, res) => {
 
         try {
             const createdChat = await Chat.create(chatData);
-            const FullChat = await Chat.findOne({ _id: createdChat._id }).populate(
-                "users",
-                "-password"
-            ).lean();
+            const FullChat = await Chat.findOne({ _id: createdChat._id })
+                .populate("users", "-password")
+                .lean();
             return res.json({
                 success: true,
                 error: '',
@@ -68,7 +67,7 @@ const accessChat = async (req, res) => {
 //@description     Fetch all chats for a user
 //@route           GET /api/chat/
 //@access          Protected
-const fetchChats = async (req, res) => {
+const getAllChats = async (req, res) => {
     try {
         let response = await Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
             .populate("users", "-password")
@@ -129,7 +128,8 @@ const createGroupChat = async (req, res) => {
 
         const fullGroupChat = await Chat.findOne({ _id: groupChat._id })
             .populate("users", "-password")
-            .populate("groupAdmin", "-password").lean();
+            .populate("groupAdmin", "-password")
+            .lean();
 
         return {
             success: true,
@@ -182,7 +182,7 @@ const renameGroup = async (req, res) => {
 // @desc    Remove user from Group
 // @route   PUT /api/chat/groupremove
 // @access  Protected
-const removeFromGroup = async (req, res) => {
+const removeMemberFromGroup = async (req, res) => {
     const { chatId, userId } = req.body;
 
     // check if the requester is admin
@@ -218,10 +218,8 @@ const removeFromGroup = async (req, res) => {
 // @desc    Add user to Group / Leave
 // @route   PUT /api/chat/groupadd
 // @access  Protected
-const addToGroup = async (req, res) => {
+const addMemberToGroup = async (req, res) => {
     const { chatId, userId } = req.body;
-
-    // check if the requester is admin
 
     const added = await Chat.findByIdAndUpdate(
         chatId,
@@ -237,25 +235,25 @@ const addToGroup = async (req, res) => {
         .lean();
 
     if (!added) {
-        return {
+        return res.json({
             success: false,
             error: 'Interval timeout',
             result: []
-        }
+        })
     } else {
-        return {
+        return res.json({
             success: true,
             error: '',
             result: added
-        }
+        })
     }
 };
 
 module.exports = {
     accessChat,
-    fetchChats,
+    getAllChats,
     createGroupChat,
     renameGroup,
-    addToGroup,
-    removeFromGroup,
+    addMemberToGroup,
+    removeMemberFromGroup,
 };

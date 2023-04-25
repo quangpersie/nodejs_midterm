@@ -1,10 +1,11 @@
 const User = require("../models/User");
 const generateToken = require("../config/generateToken");
+const bcrypt = require("bcryptjs");
 
 //@description     Get or Search all users
 //@route           GET /api/user?search=
 //@access          Public
-const allUsers = async (req, res) => {
+const searchOtherUsers = async (req, res) => {
     const keyword = req.query.search
         ? {
             $or: [
@@ -87,13 +88,22 @@ const registerUser = async (req, res) => {
 //@description     Auth the user
 //@route           POST /api/users/login
 //@access          Public
-const authUser = async (req, res) => {
+const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email }).lean();
-    console.log(user)
+    if (!email || !password) {
+        return res.json({
+            success: true,
+            error: 'Missing param',
+            result: []
+        })
+    }
 
-    if (user && (await user.matchPassword(password))) {
+    const user = await User.findOne({ email }).lean();
+    console.log('user login:', user)
+
+    let check = await bcrypt.compare(password, user.password);
+    if (user && check) {
         let u = {
             _id: user._id,
             name: user.name,
@@ -116,4 +126,4 @@ const authUser = async (req, res) => {
     }
 };
 
-module.exports = { allUsers, registerUser, authUser };
+module.exports = { searchOtherUsers, registerUser, loginUser };
