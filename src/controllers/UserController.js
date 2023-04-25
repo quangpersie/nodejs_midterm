@@ -15,10 +15,18 @@ const allUsers = async (req, res) => {
         : {};
 
     const users = await User.find(keyword).find({ _id: { $ne: req.user._id } }).lean();
-    return {
-        success: true,
-        error: '',
-        result: users
+    if(users) {
+        return res.json({
+            success: true,
+            error: '',
+            result: users
+        })
+    } else {
+        return res.json({
+            success: false,
+            error: 'Interval timeout',
+            result: []
+        })
     }
 };
 
@@ -29,21 +37,21 @@ const registerUser = async (req, res) => {
     const { name, email, password, avatar } = req.body;
 
     if (!name || !email || !password) {
-        return {
+        return res.json({
             success: false,
             error: 'Missing param',
             result: []
-        }
+        })
     }
 
     const userExists = await User.findOne({ email });
 
     if (userExists) {
-        return {
+        return res.json({
             success: false,
             error: 'User already exist',
             result: []
-        }
+        })
     }
 
     const user = await User.create({
@@ -62,17 +70,17 @@ const registerUser = async (req, res) => {
             avatar: user.avatar,
             token: generateToken(user._id),
         };
-        return {
+        return res.json({
             success: true,
             error: '',
             result: u
-        }
+        })
     } else {
-        return {
+        return res.json({
             success: false,
             error: 'User not found',
             result: []
-        }
+        })
     }
 };
 
@@ -82,7 +90,8 @@ const registerUser = async (req, res) => {
 const authUser = async (req, res) => {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).lean();
+    console.log(user)
 
     if (user && (await user.matchPassword(password))) {
         let u = {
@@ -93,17 +102,17 @@ const authUser = async (req, res) => {
             avatar: user.avatar,
             token: generateToken(user._id),
         };
-        return {
+        return res.json({
             success: true,
             error: '',
             result: u
-        }
+        })
     } else {
-        return {
+        return res.json({
             success: false,
             error: 'Wrong email or password',
             result: []
-        }
+        })
     }
 };
 

@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 // function connet to mongoDB
 async function connect() {
     try {
-        await mongoose.connect(process.env.MONGO_URI);
+        await mongoose.connect('mongodb://127.0.0.1:27017/chatApp');
         console.log('Connect db success !');
     } catch (error) {
         console.log('Connect error: ', error);

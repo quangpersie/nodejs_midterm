@@ -8,8 +8,11 @@ const accessChat = async (req, res) => {
     const { userId } = req.body;
 
     if (!userId) {
-        console.log("Missing userId param");
-        return res.sendStatus(400);
+        return res.json({
+            success: false,
+            error: 'Missing userId param',
+            result: []
+        })
     }
 
     let isChat = await Chat.find({
@@ -28,7 +31,12 @@ const accessChat = async (req, res) => {
     });
 
     if (isChat.length > 0) {
-        res.send(isChat[0]);
+        // res.send(isChat[0]);
+        return res.json({
+            success: false,
+            error: 'Multiple items found',
+            result: isChat[0]
+        })
     } else {
         let chatData = {
             chatName: "sender",
@@ -42,17 +50,17 @@ const accessChat = async (req, res) => {
                 "users",
                 "-password"
             ).lean();
-            return {
+            return res.json({
                 success: true,
                 error: '',
                 result: FullChat
-            }
+            })
         } catch (error) {
-            return {
+            return res.json({
                 success: false,
                 error: 'Interval timeout',
                 result: []
-            }
+            })
         }
     }
 };
@@ -70,7 +78,7 @@ const fetchChats = async (req, res) => {
         response = await User.populate(response, {
             path: "latestMessage.sender",
             select: "name email avatar",
-        }).lean();
+        });
         return {
             success: true,
             error: '',
@@ -92,15 +100,21 @@ const fetchChats = async (req, res) => {
 //@access          Protected
 const createGroupChat = async (req, res) => {
     if (!req.body.users || !req.body.name) {
-        return res.status(400).send({ message: "Please Fill all the feilds" });
+        return {
+            success: false,
+            error: 'Please Fill all the fields',
+            result: []
+        }
     }
 
     let users = JSON.parse(req.body.users);
 
     if (users.length < 2) {
-        return res
-            .status(400)
-            .send("More than 2 users are required to form a group chat");
+        return {
+            success: false,
+            error: 'Please Fill all the fields',
+            result: []
+        }
     }
 
     users.push(req.user);

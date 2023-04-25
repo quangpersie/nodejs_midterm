@@ -11,17 +11,17 @@ const allMessages = async (req, res) => {
             .populate("sender", "name email avatar")
             .populate("chat")
             .lean();
-            return {
+            return res.json({
                 success: true,
                 error: '',
                 result: messages
-            }
+            })
     } catch (error) {
-        return {
+        return res.json({
             success: false,
             error: 'Interval timeout',
             result: []
-        }
+        })
     }
 };
 
@@ -54,17 +54,17 @@ const sendMessage = async (req, res) => {
 
         await Chat.findByIdAndUpdate(req.body.chatId, { latestMessage: message });
 
-        return {
+        return res.json({
             success: true,
             error: '',
             result: message
-        }
+        })
     } catch (error) {
-        return {
+        return res.json({
             success: false,
             error: 'Interval timeout',
             result: []
-        }
+        })
     }
 };
 
