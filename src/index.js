@@ -1,14 +1,14 @@
 require("dotenv").config();
 const express = require("express");
-const connectDB = require("./config/db");
+const {connect} = require("./config/db");
 const userRoutes = require("./routes/user");
 const chatRoutes = require("./routes/chat");
 const messageRoutes = require("./routes/message");
-const { notFound, errorHandler } = require("./middleware/errorMiddleware");
+const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
 const path = require("path");
 const app = express();
 
-connectDB();
+connect();
 
 app.use(express.json());
 app.use(express.urlencoded());
@@ -48,7 +48,7 @@ const PORT = process.env.PORT;
 
 const server = app.listen(
     PORT,
-    console.log(`Server running on PORT ${PORT}...`.yellow.bold)
+    console.log(`Server running on PORT ${PORT}...`)
 );
 
 const io = require("socket.io")(server, {
