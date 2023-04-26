@@ -15,7 +15,7 @@ const accessOneToOne = async (req, res) => {
         })
     }
 
-    let isChat = await Chat.find({
+    let chatObj = await Chat.find({
         isGroupChat: false,
         $and: [
             { users: { $elemMatch: { $eq: req.user._id } } },
@@ -25,19 +25,21 @@ const accessOneToOne = async (req, res) => {
         .populate("users", "-password")
         .populate("latestMessage");
 
-    isChat = await User.populate(isChat, {
+    chatObj = await User.populate(chatObj, {
         path: "latestMessage.sender",
         select: "name email avatar",
     });
 
-    if (isChat.length > 0) {
-        // res.send(isChat[0]);
+    // case: 2 user have already accessed before
+    if (chatObj.length > 0) {
         return res.json({
-            success: false,
-            error: 'Multiple items found',
-            result: isChat[0]
+            success: true,
+            error: '',
+            result: chatObj[0]
         })
-    } else {
+    }
+    // case: 2 user have not already accessed before
+    else {
         let chatData = {
             chatName: "sender",
             isGroupChat: false,
@@ -45,8 +47,8 @@ const accessOneToOne = async (req, res) => {
         };
 
         try {
-            const createdChat = await Chat.create(chatData);
-            const FullChat = await Chat.findOne({ _id: createdChat._id })
+            const newChat = await Chat.create(chatData);
+            const FullChat = await Chat.findOne({ _id: newChat._id })
                 .populate("users", "-password")
                 .lean();
             return res.json({
