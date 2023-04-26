@@ -78,17 +78,19 @@ const getAllChats = async (req, res) => {
             path: "latestMessage.sender",
             select: "name email avatar",
         });
-        return {
+        console.log('ok');
+        return res.json({
             success: true,
             error: '',
             result: response
-        }
+        })
     } catch (error) {
-        return {
+        console.log('kok');
+        return res.json({
             success: false,
             error: 'Interval timeout',
             result: []
-        }
+        })
     }
 };
 
@@ -99,21 +101,21 @@ const getAllChats = async (req, res) => {
 //@access          Protected
 const createGroupChat = async (req, res) => {
     if (!req.body.users || !req.body.name) {
-        return {
+        return res.json({
             success: false,
             error: 'Please Fill all the fields',
             result: []
-        }
+        })
     }
 
     let users = JSON.parse(req.body.users);
 
     if (users.length < 2) {
-        return {
+        return res.json({
             success: false,
             error: 'Please Fill all the fields',
             result: []
-        }
+        })
     }
 
     users.push(req.user);
@@ -131,17 +133,17 @@ const createGroupChat = async (req, res) => {
             .populate("groupAdmin", "-password")
             .lean();
 
-        return {
+        return res.json({
             success: true,
             error: '',
             result: fullGroupChat
-        }
+        })
     } catch (error) {
-        return {
+        return res.json({
             success: false,
             error: 'Interval timeout',
             result: []
-        }
+        })
     }
 };
 
@@ -165,17 +167,17 @@ const renameGroup = async (req, res) => {
         .lean();
 
     if (!updatedChat) {
-        return {
+        return res.json({
             success: false,
             error: 'Interval timeout',
             result: []
-        }
+        })
     } else {
-        return {
+        return res.json({
             success: true,
             error: '',
             result: updatedChat
-        }
+        })
     }
 };
 
@@ -201,17 +203,17 @@ const removeMemberFromGroup = async (req, res) => {
         .lean();
 
     if (!removed) {
-        return {
+        return res.json({
             success: false,
             error: 'Interval timeout',
             result: []
-        }
+        })
     } else {
-        return {
+        return res.json({
             success: true,
             error: '',
             result: removed
-        }
+        })
     }
 };
 
