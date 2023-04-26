@@ -4,7 +4,7 @@ const Chat = require("../models/Chat");
 //@description     Create or fetch One to One Chat
 //@route           POST /api/chat/
 //@access          Protected
-const accessChat = async (req, res) => {
+const accessOneToOne = async (req, res) => {
     const { userId } = req.body;
 
     if (!userId) {
@@ -150,7 +150,7 @@ const createGroupChat = async (req, res) => {
 // @desc    Rename Group
 // @route   PUT /api/chat/rename
 // @access  Protected
-const renameGroup = async (req, res) => {
+const renameGroupChat = async (req, res) => {
     const { chatId, chatName } = req.body;
 
     const updatedChat = await Chat.findByIdAndUpdate(
@@ -252,10 +252,10 @@ const addMemberToGroup = async (req, res) => {
 };
 
 module.exports = {
-    accessChat,
+    accessOneToOne,
     getAllChats,
     createGroupChat,
-    renameGroup,
+    renameGroupChat,
     addMemberToGroup,
     removeMemberFromGroup,
 };
