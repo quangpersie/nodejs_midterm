@@ -48,13 +48,13 @@ const accessOneToOne = async (req, res) => {
 
         try {
             const newChat = await Chat.create(chatData);
-            const FullChat = await Chat.findOne({ _id: newChat._id })
+            const fullChat = await Chat.findOne({ _id: newChat._id })
                 .populate("users", "-password")
                 .lean();
             return res.json({
                 success: true,
                 error: '',
-                result: FullChat
+                result: fullChat
             })
         } catch (error) {
             return res.json({
@@ -204,17 +204,17 @@ const removeMemberFromGroup = async (req, res) => {
         .populate("groupAdmin", "-password")
         .lean();
 
-    if (!removed) {
-        return res.json({
-            success: false,
-            error: 'Interval timeout',
-            result: []
-        })
-    } else {
+    if (removed) {
         return res.json({
             success: true,
             error: '',
             result: removed
+        })
+    } else {
+        return res.json({
+            success: false,
+            error: 'Interval timeout',
+            result: []
         })
     }
 };
@@ -238,17 +238,17 @@ const addMemberToGroup = async (req, res) => {
         .populate("groupAdmin", "-password")
         .lean();
 
-    if (!added) {
-        return res.json({
-            success: false,
-            error: 'Interval timeout',
-            result: []
-        })
-    } else {
+    if (added) {
         return res.json({
             success: true,
             error: '',
             result: added
+        })
+    } else {
+        return res.json({
+            success: false,
+            error: 'Interval timeout',
+            result: []
         })
     }
 };

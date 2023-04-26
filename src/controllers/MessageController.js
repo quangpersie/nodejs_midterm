@@ -33,7 +33,7 @@ const sendMessage = async (req, res) => {
 
     if (!content || !chatId) {
         return res.json({
-            success: true,
+            success: false,
             error: 'Missing param',
             result: []
         })
@@ -63,7 +63,6 @@ const sendMessage = async (req, res) => {
             result: message
         })
     } catch (error) {
-        console.log('error:', error);
         return res.json({
             success: false,
             error: 'Interval timeout',
