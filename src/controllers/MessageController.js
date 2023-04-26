@@ -39,17 +39,17 @@ const sendMessage = async (req, res) => {
         })
     }
 
-    var newMessage = {
+    let newMessage = {
         sender: req.user._id,
         content: content,
         chat: chatId,
     };
 
     try {
-        var message = await Message.create(newMessage);
+        let message = await Message.create(newMessage);
 
-        message = await message.populate("sender", "name avatar").execPopulate();
-        message = await message.populate("chat").execPopulate();
+        message = await message.populate("sender", "name avatar");
+        message = await message.populate("chat");
         message = await User.populate(message, {
             path: "chat.users",
             select: "name email avatar",
@@ -63,6 +63,7 @@ const sendMessage = async (req, res) => {
             result: message
         })
     } catch (error) {
+        console.log('error:', error);
         return res.json({
             success: false,
             error: 'Interval timeout',

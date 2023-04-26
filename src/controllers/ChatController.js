@@ -78,14 +78,14 @@ const getAllChats = async (req, res) => {
             path: "latestMessage.sender",
             select: "name email avatar",
         });
-        console.log('ok');
+        
         return res.json({
             success: true,
             error: '',
             result: response
         })
     } catch (error) {
-        console.log('kok');
+        
         return res.json({
             success: false,
             error: 'Interval timeout',
