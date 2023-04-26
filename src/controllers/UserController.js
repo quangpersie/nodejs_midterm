@@ -93,7 +93,7 @@ const loginUser = async (req, res) => {
 
     if (!email || !password) {
         return res.json({
-            success: true,
+            success: false,
             error: 'Missing param',
             result: []
         })
