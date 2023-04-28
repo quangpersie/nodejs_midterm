@@ -2,7 +2,8 @@ const User = require("../models/User");
 const Chat = require("../models/Chat");
 const Message = require("../models/Message");
 
-const allMessages = async (req, res) => {
+// function to get all messages of a chat with input chatId
+const getAllMessages = async (req, res) => {
     try {
         const messages = await Message.find({ chat: req.params.chatId })
             .populate("sender", "name email avatar")
@@ -22,6 +23,7 @@ const allMessages = async (req, res) => {
     }
 };
 
+// function to create new message with content of message (content) and id of chat (chatId)
 const sendMessage = async (req, res) => {
     const { content, chatId } = req.body;
 
@@ -65,4 +67,4 @@ const sendMessage = async (req, res) => {
     }
 };
 
-module.exports = { allMessages, sendMessage };
+module.exports = { getAllMessages, sendMessage };

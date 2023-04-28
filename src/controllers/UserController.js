@@ -2,6 +2,7 @@ const User = require("../models/User");
 const generateToken = require("../config/generateToken");
 const bcrypt = require("bcryptjs");
 
+// function to search other users (except current user)
 const searchOtherUsers = async (req, res) => {
     const keyword = req.query.search
         ? {
@@ -13,6 +14,7 @@ const searchOtherUsers = async (req, res) => {
         : {};
 
     const users = await User.find(keyword).find({ _id: { $ne: req.user._id } }).lean();
+    
     if(users) {
         return res.json({
             success: true,
@@ -28,6 +30,7 @@ const searchOtherUsers = async (req, res) => {
     }
 };
 
+// function to create new user with name, email, password, avatar (nullable)
 const registerUser = async (req, res) => {
     const { name, email, password, avatar } = req.body;
 
@@ -79,6 +82,7 @@ const registerUser = async (req, res) => {
     }
 };
 
+// function to login with input email, password
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
@@ -91,7 +95,6 @@ const loginUser = async (req, res) => {
     }
 
     const user = await User.findOne({ email }).lean();
-    // console.log('user login:', user)
 
     if (user && (await bcrypt.compare(password, user.password))) {
         let u = {

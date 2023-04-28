@@ -1,9 +1,7 @@
 const User = require("../models/User");
 const Chat = require("../models/Chat");
 
-//@description     Create or fetch One to One Chat
-//@route           POST /api/chat/
-//@access          Protected
+// function to create chat between current user and a user with input userId
 const accessOneToOne = async (req, res) => {
     const { userId } = req.body;
 
@@ -66,9 +64,7 @@ const accessOneToOne = async (req, res) => {
     }
 };
 
-//@description     Fetch all chats for a user
-//@route           GET /api/chat/
-//@access          Protected
+// function to get all chats of current user
 const getAllChats = async (req, res) => {
     try {
         let response = await Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })

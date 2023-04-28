@@ -4,7 +4,7 @@ const { verifyToken } = require("../middlewares/authenticate");
 
 const router = express.Router();
 
-router.get('/:chatId', verifyToken, messageControllers.allMessages);
+router.get('/:chatId', verifyToken, messageControllers.getAllMessages);
 router.post('/', verifyToken, messageControllers.sendMessage);
 
 module.exports = router;
