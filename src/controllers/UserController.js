@@ -2,9 +2,6 @@ const User = require("../models/User");
 const generateToken = require("../config/generateToken");
 const bcrypt = require("bcryptjs");
 
-//@description     Get or Search all users
-//@route           GET /api/user?search=
-//@access          Public
 const searchOtherUsers = async (req, res) => {
     const keyword = req.query.search
         ? {
@@ -31,9 +28,6 @@ const searchOtherUsers = async (req, res) => {
     }
 };
 
-//@description     Register new user
-//@route           POST /api/user/
-//@access          Public
 const registerUser = async (req, res) => {
     const { name, email, password, avatar } = req.body;
 
@@ -85,9 +79,6 @@ const registerUser = async (req, res) => {
     }
 };
 
-//@description     Auth the user
-//@route           POST /api/users/login
-//@access          Public
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
