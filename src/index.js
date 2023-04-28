@@ -8,7 +8,9 @@ const PORT = process.env.PORT;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors())
+app.use(cors({
+    origin: "http://localhost:3000"
+}))
 
 app.get("/", (req, res) => {
     res.send("API is running...");
@@ -38,7 +40,7 @@ connectMongo().then(e => {
     const io = require("socket.io")(server, {
         pingTimeout: 60000,
         cors: {
-            origin: "http://localhost:3000",
+            origin: "http://localhost:3000"
         },
     });
 
