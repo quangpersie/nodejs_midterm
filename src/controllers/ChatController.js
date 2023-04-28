@@ -16,8 +16,8 @@ const accessOneToOne = async (req, res) => {
     let chatObj = await Chat.find({
         isGroupChat: false,
         $and: [
-            { users: { $elemMatch: { $eq: req.user._id } } },
-            { users: { $elemMatch: { $eq: userId } } },
+            { users: { $elemMatch: { $eq: req.user._id || userId  } } },
+            { users: { $elemMatch: { $eq: req.user._id || userId  } } },
         ],
     })
         .populate("users", "-password")
