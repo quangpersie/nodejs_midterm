@@ -16,8 +16,8 @@ const accessOneToOne = async (req, res) => {
     let chatObj = await Chat.find({
         isGroupChat: false,
         $and: [
-            { users: { $elemMatch: { $eq: req.user._id || userId  } } },
-            { users: { $elemMatch: { $eq: req.user._id || userId  } } },
+            { users: { $elemMatch: { $eq: req.user._id || userId } } },
+            { users: { $elemMatch: { $eq: req.user._id || userId } } },
         ],
     })
         .populate("users", "-password")
@@ -28,6 +28,24 @@ const accessOneToOne = async (req, res) => {
         select: "name email avatar",
     });
 
+    let check = await Chat.find({}).lean();
+    if (check.length === 1) {
+        console.log('check: ', check);
+        if (check[0].users[0].toString() === req.user._id.toString() && check[0].users[1].toString() === userId.toString()) {
+            return res.json({
+                success: false,
+                error: 'Already exist',
+                result: []
+            })
+        }
+        if (check[0].users[1].toString() === req.user._id.toString() && check[0].users[0].toString() === userId.toString()) {
+            return res.json({
+                success: false,
+                error: 'Already exist',
+                result: []
+            })
+        }
+    }
     // case: 2 user have already accessed before
     if (chatObj.length > 0) {
         return res.json({
